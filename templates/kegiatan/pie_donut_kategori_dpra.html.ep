@@ -1,0 +1,93 @@
+% my $data_grafik = db->aktifitas->data_grafik_kategori_dpra(\&param);
+
+% my $par_dpra = param('dpra') || '';
+% my $data_dpra = db->dpd->kelurahan($par_dpra);
+
+<script>
+$(document).ready(function(){
+	//chart kategori
+	var data = [
+% foreach my $id_kategori (keys %{$data_grafik->{kategori}}){
+%	foreach my $nama_kategori (keys %{$data_grafik->{kategori}{$id_kategori}}){
+		["<%= $nama_kategori %>",<%= $data_grafik->{kategori}{$id_kategori}{$nama_kategori} %>],
+%	}
+% }
+	];
+	var plot1 = jQuery.jqplot ('chart1_kategori_dpra', [data],{ 
+		seriesDefaults: {
+		// Make this a pie chart.
+		renderer: jQuery.jqplot.PieRenderer, 
+			rendererOptions: {
+				// Put data labels on the pie slices.
+				// By default, labels show the percentage of the slice.
+				showDataLabels: true
+			}
+		}, 
+		legend: { show:true, location: 'e' },
+		title: {text:"DPRa <%= $data_dpra->nama %>"},
+		highlighter: {
+			show: true,
+			useAxesFormatters: false,
+			tooltipFormatString: '%s'
+		}
+	});
+
+	$('#chart1_kategori_dpra').bind('jqplotDataClick',
+            function (ev, seriesIndex, pointIndex, data) {
+		$(".modal-grafik").modal('show');
+		$(".modal-grafik").on("shown.bs.modal", function(){
+			$(".modal-grafik").find(".modal-body #pencapaian").text(data);
+			var value = $(".modal-grafik").find(".modal-body #pencapaian").text();
+			var arr = value.split(",");
+			$(".modal-grafik").find("#judul").text(arr[0]);
+			$(".modal-grafik").find(".modal-body #pencapaian").text("Nilai : "+arr[1]);
+		});
+            }
+        );
+/*
+	if (!$.jqplot.use_excanvas) {
+		var outerDiv = $(document.createElement('div'));
+		var header = $(document.createElement('div'));
+		var div = $(document.createElement('div'));
+
+		outerDiv.append(header);
+		outerDiv.append(div);
+
+		outerDiv.addClass('jqplot-image-container');
+		header.addClass('jqplot-image-container-header');
+		div.addClass('jqplot-image-container-content');
+
+		header.html('Klik kanan untuk menyimpan gambar.');
+
+		var close = $(document.createElement('button'));
+		close.addClass('jqplot-image-container-close');
+		close.html('Tutup');
+		close.addClass('btn btn-round btn-warning');
+		close.click(function() {
+			$(this).parents('div.jqplot-image-container').hide(500);
+		})
+		header.append(close);
+
+		$('#chart1_dpc').after(outerDiv);
+		outerDiv.hide();
+
+		outerDiv = header = div = close = null;
+
+		var btn = $(document.createElement('button'));
+		btn.text('Simpan Gambar');
+		btn.addClass('jqplot-image-button btn btn-round btn-dark');
+		btn.bind('click', {chart: $('#chart1_dpc')}, function(evt) {
+			var imgelem = evt.data.chart.jqplotToImageElem();
+			var div = $(this).nextAll('div.jqplot-image-container').first();
+			div.children('div.jqplot-image-container-content').empty();
+			div.children('div.jqplot-image-container-content').append(imgelem);
+			div.show(500);
+			div = null;
+		});
+
+		$('#chart1_dpc').after(btn);
+		btn.after('<br />');
+		btn = null;
+	}*/
+});
+</script>

@@ -1,0 +1,44 @@
+% my $per = param('_per') || 10;
+% my %param;
+% foreach (@$params) { my $val = param($_) || next; $param{$_} = $val }
+% $param{_pg} = param('_pg') if param('_pg');
+% my $param_page = '';
+% foreach my $keys (keys %param){
+% 	$param_page .= $keys.'='.$param{$keys}.'&';
+% }
+% $param_page = substr($param_page,0,-1);
+		<div class="x_title">
+			<div class="col-sm-2 col-xs-12">
+			<ul class="nav navbar-left panel_toolbox pull-left">
+				<li>Tampilkan
+					<select name="tampilkan" id="tampilkan" class="form-control" data-id="<%= $param_page %>">
+						<option value="10" <%= $per eq 10 ? 'selected' : '' %>>10</option>
+						<option value="25" <%= $per eq 25 ? 'selected' : '' %>>25</option>
+						<option value="50" <%= $per eq 50 ? 'selected' : '' %>>50</option>
+						<option value="100" <%= $per eq 100 ? 'selected' : '' %>>100</option>
+					</select>
+				</li>
+			</ul>
+			</div>
+			<div class="col-sm-4 col-xs-12">
+				<span><a href="<%= $url_excel %>?<%= $param_page %>"><i class="fa fa-file-excel-o fa-3x" title="Download Excel"></i></a></span>
+			</div>
+			<div class="col-sm-6 col-xs-12 text-right">
+% if($id_tambah){
+			<button class="btn btn-round btn-success" id="<%= $id_tambah %>">Tambah</button>
+% }
+% if($id_edit){
+			<button class="btn btn-round btn-warning" id="<%= $id_edit %>">Edit</button>
+% }
+% if($id_detail){
+			<button class="btn btn-round btn-info" id="<%= $id_detail %>">Detail</button>
+% }
+% if($id_nilai){
+			<button class="btn btn-round btn-primary" id="<%= $id_nilai %>">Penilaian</button>
+% }
+% if($id_hapus){
+			<button class="btn btn-round btn-danger" id="<%= $id_hapus %>">Hapus</button>
+% }
+			</div>
+			<div class="clearfix"></div>
+		</div>

@@ -1,0 +1,72 @@
+%= include 'header', title => 'Upload Kecamatan dan Kelurahan'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Upload Kecamatan dan Kelurahan</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>File Upload Kecamatan dan Kelurahan</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+		<br />
+		<form id="upload_kecamatanKelurahan" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/dpd/upload_kecamatan" enctype="multipart/form-data">
+			<div class="clearfix"></div>
+			<div class="form-group">
+% my $data_dpd = db->dpd->data();
+				<label class="control-label col-sm-3 col-xs-12">DPD</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<select class="form-control select2" id="dpd" name="dpd" data-placeholder="Pilih DPD">
+						<option value=""></option>
+% my $par_dpd = param('dpd') || 0;
+% while(my $dpd = $data_dpd->next){
+						<option value="<%= $dpd->id %>" <%= $par_dpd == $dpd->id ? 'selected' : '' %>><%= $dpd->nama %></option>
+% }	
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="kode">Data Upload</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="file" id="data_upload" name="csv_file" value="">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-6 col-xs-12">
+					<p class="text-left">Informasi : <br> sebelum upload, silahkan klik format upload <i class="fa fa-long-arrow-right fa-fw"></i> <a href="/misc/dpd/upload_kecamatan.kelurahan.csv?op=download_format"><i class="fa fa-files-o fa-2x" title="format upload"></i></a><p>
+				</div>
+			</div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-3">
+				<button type="button" class="btn btn-success" id="upload_kecamatan">Upload</button>
+			</div>
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

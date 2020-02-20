@@ -1,0 +1,123 @@
+%= include 'header', title => 'DPD'
+% use CGI::Enurl;
+
+<div class="modal fade modal-dpd"  tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+<div class="modal-content">
+	<div class="modal-header btn-danger">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="myModalLabel2">Hapus DPD</h4>
+	</div>
+	<div class="modal-body">
+		<strong>Apakah</strong>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+		<button type="button" class="btn btn-danger" id="ya">Ya</button>
+	</div>
+</div>
+</div>
+</div>
+<!-- /modals -->
+
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>DPD</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Pencarian <i class="fa fa-search"></i></h2>
+			<ul class="nav navbar-right panel_toolbox">
+				<li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content" id="content_hide">
+		<br />
+		<form class="form-horizontal form-label-left input_mask">
+			<label class="control-label col-sm-3 col-xs-12">Nama</label>
+			<div class="col-sm-4 col-xs-12 form-group has-feedback">
+				<input type="text" class="form-control" id="nama" placeholder="Nama" value="<%= param('nama') %>">
+				<span class="fa fa-pencil-square-o form-control-feedback right" aria-hidden="true"></span>
+			</div>
+			<div class="clearfix"></div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+				<div class="col-sm-9 col-xs-12 col-sm-offset-3">
+					<button type="button" class="btn btn-success" id="cari_data">Cari</button>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>
+	<div class="row">
+	<div class="x_panel">
+% my %button_akses = %{$c->session->{pemetaan}};
+<%= include 'pager_header', id_tambah => $button_akses{11} ? 'tambah_dpd' : '', id_edit => $button_akses{12} ? 'edit_dpd' : '', id_hapus => $button_akses{13} ? 'hapus_dpd' : '', params => [qw/nama/] %>
+% my $rs = db->dpd->list(\&param);
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning alert-dismissible fade in" role="alert">
+				<strong><span id="judul"></span> <i class="fa" id="icon"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+%	my $judul ='Pemberitahuan';
+%	my $fa_icon = 'fa-info';
+%	my $alert = 'alert-success';
+%	if($info =~ /hapus/){
+%		$judul = 'Hapus';
+%		$fa_icon = 'fa-times';
+%		$alert = 'alert-danger';
+%	}
+		<div class="info text-center">
+			<div class="alert <%= $alert %> alert-dismissible fade in" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong><%= $judul %> <i class="fa <%= $fa_icon %>"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+			<div class="table table-responsive">
+			<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr class="btn-dark">
+					<th class="text-center">#</th>
+					<th class="text-center">Nama</th>
+					<th class="text-center"><input type="checkbox" class="flat" id="checkAll"></th>
+				</tr>
+			</thead>
+			<tbody>
+% my $i = $rs->pager->entries_per_page * ($rs->pager->current_page - 1);
+% my $dapat = 0;
+% while(my $row = $rs->next){
+%	$dapat = 1;
+				<tr>
+					<td class="text-right"><%= ++$i %></td>
+					<td class="text-center"><%= $row->nama %></td>	
+					<td class="text-center"><input type="checkbox" class="flat" id="data_dpd" value="<%= $row->id %>" data-name="<%= $row->nama %>"></td>
+				</tr>
+% }
+% unless($dapat){
+				<tr><td colspan="7">Data tidak ditemukan</td></tr>
+% }
+			</tbody>
+			</table>
+			</div>
+		</div>
+% if($dapat){
+<%= include 'pager', rs => $rs, i => $i, params => [qw/nama/] %>
+% }
+	</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+
+%= include 'footer'

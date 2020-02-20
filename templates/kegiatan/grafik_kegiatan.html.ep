@@ -1,0 +1,210 @@
+%= include 'header', title => 'Grafik'
+
+<div class="modal fade modal-grafik"  tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-sm" id="modal_size">
+<div class="modal-content">
+	<div class="modal-header btn-primary" id="modal_color">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="judul"></h4>
+	</div>
+	<div class="modal-body">
+		<strong id="pencapaian"></strong>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+	</div>
+</div>
+</div>
+</div>
+<!-- /modals -->
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Grafik</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Pencarian <i class="fa fa-search"></i></h2>
+			<ul class="nav navbar-right panel_toolbox">
+				<li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content" id="content_hide">
+		<br />
+		<form class="form-horizontal form-label-left input_mask">
+		<div class="col-sm-6 col-xs-12">
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12">Bulan</label>
+				<div class="col-sm-9 col-xs-12 form-group has-feedback">
+					<input type="text" class="form-control has-feedback-right month" id="bulan" value="<%= param('my1') %>" placeholder="Bulan">
+					<span class="fa fa-calendar-o form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="bidang">Bidang</label>
+				<div class="col-sm-9 col-xs-12">
+					<select class="form-control select2" name="bidang" id="bidang" multiple="multiple" data-placeholder="Pilih Bidang">
+						<option value=""></option>
+% my $par_bidang = param('bidang') || 0;
+% my @bidang_param = split /,/, $par_bidang;
+% my %param_bidang = map {$_ => $_} @bidang_param;
+% my $data_bidang = db->bidang->data();
+% while(my $bidang = $data_bidang->next){
+						<option value="<%= $bidang->id %>" <%= $param_bidang{$bidang->id} ? 'selected' : '' %>><%= $bidang->nama %></option>
+% }
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="kategori">Kategori</label>
+				<div class="col-sm-9 col-xs-12">
+					<select class="form-control select2" name="kategori" id="kategori" multiple="multiple" data-placeholder="Pilih Kategori">
+						<option value=""></option>
+% my $par_kategori = param('kategori') || 0;
+% my @kategori_param = split /,/, $par_kategori;
+% my %param_kategori = map {$_ => $_} @kategori_param;
+% my $data_kategori = db->kategori->induk();
+% while(my $kategori = $data_kategori->next){
+						<option value="<%= $kategori->id %>" <%= $param_kategori{$kategori->id} ? 'selected' : '' %>><%= $kategori->nama %></option>
+% }
+					</select>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="col-sm-6 col-xs-12">
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="kecamatan">DPC</label>
+				<div class="col-sm-9 col-xs-12">
+					<select class="form-control select2" name="kecamatan" id="kecamatan" multiple="multiple" data-placeholder="Pilih DPC">
+						<option value=""></option>
+% my $par_kecamatan = param('dpc') || -1;
+% my @kecamatan_param = split /,/, $par_kecamatan;
+% my %param_kecamatan = map {$_ => $_} @kecamatan_param;
+% my $data_kecamatan = db->dpd->kecamatan();
+% while(my $kec = $data_kecamatan->next){
+						<option id="opt_kecamatan" value="<%= $kec->id %>" <%= $param_kecamatan{$kec->id} ? 'selected' : '' %>><%= $kec->nama %></option>
+% }
+					</select>
+					<input type="hidden" name="dpc" id="data_dpc" value="">
+				</div>
+			</div>
+% my $par_tampil = param('tampil_dpra') || '';
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="tampilan">Tampilkan DPRa</label>
+				<div class="col-sm-4 col-xs-12">
+					<div class="radio">
+						<label><input type="radio" class="flat2" id="tampil_dpra" <%= $par_tampil eq 'ya' ? 'checked' : '' %> name="tampil_dpra" value="ya"> Ya</label>
+						<label><input type="radio" class="flat2" id="tampil_dpra" <%= $par_tampil eq 'ya' ? '' : 'checked' %> name="tampil_dpra" value="tidak"> Tidak</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="kelurahan">DPRa</label>
+				<div class="col-sm-9 col-xs-12">
+					<select class="form-control select2" name="kelurahan" id="kelurahan" multiple="multiple" data-placeholder="Pilih DPRa">
+						<option value=""></option>
+% my $par_kelurahan = param('dpra') || 0;
+% my @kelurahan_param = split /,/, $par_kelurahan;
+% my %param_kelurahan = map {$_ => $_} @kelurahan_param;
+% my $data_kelurahan = db->dpd->kelurahan(0,$par_kecamatan);
+% while(my $kel = $data_kelurahan->next){
+						<option id="opt_kelurahan" value="<%= $kel->id %>" <%= $param_kelurahan{$kel->id} ? 'selected' : '' %>><%= $kel->nama %></option>
+% }
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="ln_solid"></div>
+		<div class="form-group">
+			<div class="col-sm-9 col-xs-12 col-sm-offset-3">
+				<button type="button" class="btn btn-success" id="cari_data">Cari</button>
+			</div>
+		</div>
+		</form>
+		</div>
+	</div>
+	</div>
+% my @nama_bulan = (qw/Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember/);
+% my $par_bulan = param('my1') || '';
+% my ($angka) = ($par_bulan =~ /^(\d+)-/);
+% my ($tahun) = ($par_bulan =~ /(\d+)$/);
+% my $par_tamp = param('tampilan') || '';
+% my $par_dpc = param('dpc') || '';
+% my $par_dpra = param('dpra') || '';
+% my $par_tes = param('tes') || '';
+% my $par_bidang = param('bidang') || '';
+% my $data_bidang = db->bidang->data_array($par_bidang);
+% my $nama_bidang = '';
+% while(my $dbg = $data_bidang->next){
+%	$nama_bidang .= $dbg->nama.', ';
+% }
+% $nama_bidang =~ s/\,\s$//;
+% my $par_kategori = param('kategori') || '';
+% my $data_kategori = db->kategori->data_array($par_kategori);
+% my $nama_kategori = '';
+% while(my $dk = $data_kategori->next){
+%	$nama_kategori .= $dk->nama.', ';
+% }
+% $nama_kategori =~ s/\,\s$//;
+% my $par_dpc = param('dpc') || '';
+% my $data_dpc = db->dpd->kecamatan_array($par_dpc);
+% my $nama_dpc = '';
+% while(my $dd = $data_dpc->next){
+%	$nama_dpc .= $dd->nama.', ';
+% }
+% $nama_dpc =~ s/\,\s$//;
+% my $par_dpra = param('dpra') || '';
+% my $data_dpra = db->dpd->kelurahan_array($par_dpra);
+% my $nama_dpra = '';
+% while(my $ddp = $data_dpra->next){
+%	$nama_dpra .= $ddp->nama.', ';
+% }
+% $nama_dpra =~ s/\,\s$//;
+
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Grafik Aktifitas <%= $par_bulan ? 'Bulan '.$nama_bulan[$angka-1].' '.$tahun : ''%></h2>
+			<div class="clearfix"></div>
+			<div><p class="text-danger"><%= $par_bidang ? '- Bidang '.$nama_bidang : '' %></p></div>
+			<div class="clearfix"></div>
+			<div><p class="text-success"><%= $par_kategori ? '- Kategori '.$nama_kategori : '' %></p></div>
+			<div class="clearfix"></div>
+			<div><p class="text-warning"><%= $par_dpc ? '- DPC '.$nama_dpc : '' %></p></div>
+			<div class="clearfix"></div>
+			<div><p class="text-primary"><%= $par_dpra ? '- DPRa '.$nama_dpra : '' %></p></div>
+			<div class="clearfix"></div>
+		</div>
+
+		<div class="x_content">
+			<div class="col-sm-12 col-xs-12">
+%	if($par_tes){
+				<div id="chart1"></div>
+%	}else{
+				<div><span id="info1"></span></div>
+				<div id="chart1_bar" style="height:400px;"></div>
+%	}
+			</div>
+
+			<div class="col-sm-12 col-xs-12">
+%	if($par_tes){
+				<div id="chart3" style="height:600px;"></div>
+%	}else{
+				<div style="margin-top:20px;"><span id="info2"></span></div>
+				<div id="chart2_bar" style="height:400px;"></div>
+%	}
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

@@ -1,0 +1,110 @@
+	<div id="gmap" style="height:470px;"></div>
+
+% my %lat_long = %config::kecamatan;
+% my %kelurahan = %config::kelurahan;
+% my $par_kecamatan = param('kecamatan') || '';
+% my $par_kelurahan = param('kelurahan') || '';
+% my $data_kegiatan;
+% $data_kegiatan = db->aktifitas->list_kelurahan(\&param) if $par_kelurahan;
+% my %param;
+% my @params = (qw/dmy1 kecamatan kelurahan/);
+% foreach (@params) { my $val = param($_) || next; $val =~ s/\s/+/g;$param{$_} = $val }
+% my $param_page = '';
+% foreach my $keys (keys %param){
+% 	$param_page .= $keys.'='.$param{$keys}.'&';
+% }
+% $param_page = substr($param_page,0,-1);
+<script>
+$(document).ready(function(){
+	var LocsA = [
+% if($par_kelurahan){
+%	while(my $row = $data_kegiatan->next){
+%		my ($lat, $long) = split /\,/, $row->koordinat;
+%		my $kategori = db->kategori->data($row->kategori);
+		{
+			lat: <%= $lat %>,
+			lon: <%= $long %>,
+			title: "<%= $kategori ? $kategori->nama : '' %>",
+			html: [
+				"<h3><%= $kategori ? $kategori->nama : '' %></h3>",
+				"&emsp;<button type='button' class='btn btn-xs btn-primary' onClick=clickDetail(<%= $row->id %>);>Detail</button>"
+			].join(''),
+			zoom: 18,
+			icon: 'http://maps.google.com/mapfiles/marker.png',
+			animation: google.maps.Animation.DROP
+		},
+%	}
+% }elsif($par_kecamatan){
+%	foreach my $keys(keys $kelurahan{$par_kecamatan}){
+%		my ($lat, $long) = split /\,/, $kelurahan{$par_kecamatan}{$keys};
+		{
+			lat: <%= $lat %>,
+			lon: <%= $long %>,
+			title: "<%= $keys %>",
+			html: [
+				"<h3><%= $keys %></h3>",
+% 		$keys =~ s/\s/+/g;
+				"<p><a href=?<%= $param_page %>&kelurahan=<%= $keys %>>Tampilkan Kegiatan</a></p>"
+			].join(''),
+			zoom: 14,
+			icon: 'http://maps.google.com/mapfiles/marker.png',
+			animation: google.maps.Animation.DROP
+		},
+%	}
+% }else{
+% 	foreach my $keys(keys %lat_long){
+%		my ($lat, $long) = split /\,/, $lat_long{$keys};
+		{
+			lat: <%= $lat %>,
+			lon: <%= $long %>,
+			title: "<%= $keys %>",
+			html: [
+			"<h3><%= $keys %></h3>",
+% 		$keys =~ s/\s/+/g;
+			"<p><a href=?<%= $param_page %>&kecamatan=<%= $keys %>>Tampilkan Kelurahan</a></p>"
+			].join(''),
+			zoom: 12,
+			icon: 'http://maps.google.com/mapfiles/marker.png',
+			animation: google.maps.Animation.DROP
+		},
+% 	}
+% }
+	];
+
+	//dropdown example
+	new Maplace({
+		locations: LocsA,
+		map_div: '#gmap',
+		controls_title: 'Pilih Lokasi:',
+		listeners: {
+			click: function(marker, event) {
+				alert('Klik.');
+				map.setOptions({scrollwheel: true});
+			}
+		}
+	}).Load();
+
+	$('.date').datepicker({
+		format: "mm-yyyy",
+		minViewMode: 1,
+		maxViewMode: 2,
+		autoclose: true
+	});
+
+	//load bulan
+	$("#bulan").on("change", function(){
+		var self = $(this);
+		if(self.data('id')){
+			$(location).attr("href","?dmy1="+self.val()+"&"+self.data('id'));
+		}else{
+			$(location).attr("href","?dmy1="+self.val());
+		}
+	});
+});
+
+function clickDetail(id){
+	$(".modal-detail").load("/search/kegiatan/maps_detail?id="+id);
+	$(".modal-detail").modal('show');
+}
+
+</script>

@@ -1,0 +1,187 @@
+%= include 'header', title => 'Hak Akses'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Hak Akses</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<form id="hak_akses" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/pengaturan/hak_akses">
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_content">
+			<div class="peringatan hidden text-center">
+			<div class="x_content bs-example-popovers">
+				<div class="alert alert-warning fade in" role="alert">
+					<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+				</div>
+			</div>
+			</div>
+% my $info = param('info') || '';
+% if($info){
+%	my $head = 'Peringatan';
+%	my $alert = 'alert-warning';
+%	my $icon = 'fa-warning';
+%	if($info =~ /berhasil/){
+%		$head = 'Informasi';
+%		$alert = 'alert-info';
+%		$icon = 'fa-info';
+%	}
+			<div class="info text-center" id="info_error">
+				<div class="alert <%= $alert %> alert-dismissible fade in" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times</span></button>
+					<strong><%= $head %> <i class="fa <%= $icon %>"></i></strong> <i><%= $info %></i>
+				</div>
+			</div>
+% }
+% my $data_grup = db->admin->data_grup();
+			<div class="form-group" id="group_level">
+				<label class="control-label col-sm-3 col-xs-12">Admin Grup</label>
+				<div class="col-sm-4 col-xs-12 has-feedback">
+					<select class="form-control admin_grup" name="admin_grup" data-placeholder="Pilih admin grup">
+						<option value=""></option>
+% my $par_grup = param('admin_grup') || 0;
+% while(my $grup = $data_grup->next){
+						<option value="<%= $grup->id %>" <%= $par_grup == $grup->id ? 'selected' : '' %>><%= $grup->nama %></option>
+% }	
+					</select>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+				<div class="col-sm-9 col-xs-12 col-sm-offset-3">
+					<button type="button" class="btn btn-success" id="cek">Cek</button>
+					<button type="button" class="btn btn-warning" id="batal">Batal</button>
+					<button type="button" class="btn btn-primary" id="perbarui">Perbarui</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+% my $page = db->pengaturan->hak_akses(\&param);
+% my ($sql, @bind) = $page->{admin}->select_sql;
+<!--%= $sql %-->
+	<div class="row">
+	<div class="col-sm-6 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Dasbor</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{home}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Master Admin</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{admin}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Master DPD</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{dpd}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	<div class="row">
+	<div class="col-sm-6 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Master Bidang</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{bidang}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Master Kategori</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{kategori}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	</div>
+	<div class="col-sm-6 col-xs-12">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Kegiatan</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{kegiatan}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Pengaturan</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content">
+			<div class="form-group">
+% while(my $row = $page->{pengaturan}->next){
+				<div class="checkbox">
+					<label><input type="checkbox" class="flat" name="halaman" id="cek_halaman" value="<%= $row->id %>" <%= $par_grup ? $par_grup == $row->admin_grup ? 'checked' : '' : '' %>> <%= $row->judul %></label>
+				</div>
+% }
+			</div>
+		</div>
+	</div>
+	</div>
+	</div>
+	</form>
+</div>
+
+%= include 'footer'

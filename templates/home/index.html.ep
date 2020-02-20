@@ -1,0 +1,71 @@
+%= include 'header', title => 'Kalender Kegiatan'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Dasbor</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="x_panel">
+		<div class="x_content">
+			<div class="kalender_kegiatan" style="height:700px;"></div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="event-modal" tabindex="-1" role="dialog" aria-labelledby="event-modalLabel" aria-hidden="true">
+<div class="modal-dialog" style="width">
+	<div class="modal-content">
+	<div class="modal-header">
+		<h4 class="modal-title"></h4>
+	</div>
+	<div class="modal-body">
+	<form class="form-horizontal">
+        	<div class="row top_tiles">
+			<!--div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a href="/kegiatan/entri_kegiatan">
+				<div class="icon"><i class="fa fa-pencil-square-o right"></i></div>
+				<div class="count">Entri</div>
+				<h3>Kegiatan</h3>
+				<p>input data aktifitas dakwah.</p>
+			</a></div>
+			</div-->
+			<div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a id="data_kegiatan" href="/kegiatan/index?dmy1=<%= db->now->dmy %>&dmy2=<%= db->now->dmy %>">
+				<div class="icon"><i class="fa fa-file right"></i></div>
+				<div class="count">Data</div>
+				<h3>Kegiatan</h3>
+				<p>data aktifitas dakwah.</p>
+			</a></div>
+			</div>
+			<div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a id="grafik_kegiatan" href="/kegiatan/grafik_kegiatan?my1=<%= db->now->mon %>-<%= db->now->year %>">
+				<div class="icon"><i class="fa fa-pie-chart right"></i></div>
+				<div class="count">Grafik</div>
+				<h3>Kegiatan</h3>
+				<p>grafik kegiatan aktifitas dakwah.</p>
+			</a></div>
+			</div>
+			<div class="animated flipInY col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a id="peta_kegiatan" href="/kegiatan/peta_kegiatan?dmy1=<%= db->now->mon %>-<%= db->now->year %>">
+				<div class="icon"><i class="fa fa-map-marker right"></i></div>
+				<div class="count">Peta</div>
+				<h3>Kegiatan</h3>
+				<p>peta kegiatan aktifitas dakwah.</p>
+			</a></div>
+			</div>
+
+		</div>
+	</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	</div>
+	</div>
+</div>
+</div>
+
+
+%= include 'footer'

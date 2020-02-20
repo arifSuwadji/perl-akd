@@ -1,0 +1,275 @@
+%= include 'header', title => 'Detail Data Kegiaatan'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Detail Data Kegiatan</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Data Kegiatan</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+% my $par_id = param('id') || 0;
+% my $data_kegiatan = db->aktifitas->data($par_id);
+		<div class="x_content">
+		<form id="detail_kegiatan" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/kegiatan/index" enctype="multipart/form-data">
+		<!-- Smart Wizard -->
+		<div id="wizard" class="form_wizard wizard_horizontal">
+			<ul class="wizard_steps">
+				<li><a href="#step-1"><span class="step_no">1</span><span class="step_descr">Data Kegiatan</span></a></li>
+				<li><a href="#step-2"><span class="step_no">2</span><span class="step_descr">Lokasi Kegiatan</span></a></li>
+				<li><a href="#step-3"><span class="step_no">3</span><span class="step_descr">Jumlah Peserta</span></a></li>
+				<li><a href="#step-4"><span class="step_no">4</span><span class="step_descr">Foto Kegiatan</span></a></li>
+			</ul>
+			<div id="step-1">
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="Bidang">Bidang</label>
+					<div class="col-sm-6 col-xs-12" id="grup_kategori">
+						<select class="form-control" name="bidang" id="bidang" data-placeholder="Pilih Bidang">
+							<option value=""></option>
+% my $par_bidang = $par_id ? $data_kegiatan->bidang : 0;
+% my $data_bidang = db->bidang->data();
+% while(my $bidang = $data_bidang->next){
+							<option value="<%= $bidang->id %>" <%= $par_bidang == $bidang->id ? 'selected' : '' %>><%= $bidang->nama %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="kategori">Kategori</label>
+					<div class="col-sm-6 col-xs-12" id="grup_kategori">
+						<select class="form-control" name="kategori" id="kategori" data-placeholder="Pilih Kategori">
+							<option value=""></option>
+% my $par_kategori = $par_id ? $data_kegiatan->kategori : 0;
+% my $data_kategori = db->kategori->induk();
+% while(my $kategori = $data_kategori->next){
+							<option value="<%= $kategori->id %>" <%= $par_kategori == $kategori->id ? 'selected' : '' %>><%= $kategori->nama %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="kegiatan">Kegiatan</label>
+					<div class="col-sm-6 col-xs-12" id="grup_kegiatan">
+						<input type="text" class="form-control" name="kegiatan" id="kegiatan" value="<%= $par_id ? $data_kegiatan->kegiatan : ''%>">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12">Level Kegiatan</label>
+					<div class="col-sm-6 col-xs-12 form-group has-feedback">
+						<select class="form-control" name="level" id="level" data-placeholder="Pilih Level Kegiatan">
+							<option value=""></option>
+% my $par_level = $par_id ? $data_kegiatan->level : '';
+% foreach(qw/dpd dpc dpra/){
+							<option value="<%= $_ %>" <%= $par_level eq $_ ? 'selected' : '' %>><%= $_ eq 'dpd' ? 'DPD' : $_ eq 'dpc' ? 'DPC' : $_ eq 'dpra' ? 'DPRa' : '' %></option>
+% }	
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="deskripsi">Deskripsi</label>
+					<div class="col-sm-6 col-xs-12">
+						<textarea class="form-control" rows="3" name="keterangan" id="deskripsi" placeholder='Deskripsi Kegiatan'><%= $par_id ? $data_kegiatan->keterangan : '' %></textarea>
+					</div>
+				</div>
+			</div>
+			<div id="step-2">
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="dpd">DPD</label>
+					<div class="col-sm-6 col-xs-12">
+						<select class="form-control" name="dpd" id="dpd" data-placeholder="Pilih DPD">
+							<option value=""></option>
+% my $get_kelurahan = $par_id ? db->dpd->kelurahan($data_kegiatan->kelurahan) : 0;
+% my $get_kecamatan = $par_id ? db->dpd->kecamatan($get_kelurahan->kecamatan) : 0;
+% my $par_dpd = $par_id ? $get_kecamatan->dpd : 0;
+% my $data_dpd = db->dpd->data();
+% while(my $dpd = $data_dpd->next){
+							<option value="<%= $dpd->id %>" <%= $par_dpd == $dpd->id ? 'selected' : '' %>><%= $dpd->nama %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="kecamatan">Kecataman</label>
+					<div class="col-sm-6 col-xs-12">
+						<select class="form-control" name="kecamatan" id="kecamatan" data-placeholder="Pilih Kecamatan">
+							<option value=""></option>
+% my $par_kecamatan = $par_id ? $get_kelurahan->kecamatan : 0;
+% my $data_kecamatan = db->dpd->kecamatan();
+% while(my $kec = $data_kecamatan->next){
+							<option id="opt_kecamatan" value="<%= $kec->id %>" <%= $par_kecamatan == $kec->id ? 'selected' : '' %>><%= $kec->nama %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="kelurahan">Kelurahan</label>
+					<div class="col-sm-6 col-xs-12">
+						<select class="form-control" name="kelurahan" id="kelurahan" data-placeholder="Pilih Kelurahan">
+							<option value=""></option>
+% my $par_kelurahan = $par_id ? $get_kelurahan->id : 0;
+% my $data_kelurahan = db->dpd->kelurahan();
+% while(my $kel = $data_kelurahan->next){
+							<option id="opt_kelurahan" value="<%= $kel->id %>" <%= $par_kelurahan == $kel->id ? 'selected' : '' %>><%= $kel->nama %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="rw">RW</label>
+					<div class="col-sm-6 col-xs-12">
+						<select class="form-control" name="rw" id="rw" data-placeholder="Pilih RW">
+							<option value=""></option>
+% my $par_rw = $par_id ? $data_kegiatan->rw : 0;
+% foreach(1 .. 40){
+							<option value="<%= sprintf('%0.2d',$_) %>" <%= $par_rw == $_ ? 'selected' : '' %>><%= sprintf('%0.2d', $_) %></option>
+% }
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<input type="hidden" id="nama_kecamatan" value="">
+					<input type="hidden" id="nama_kelurahan" value="">
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="alamat">Alamat</label>
+					<div class="col-sm-6 col-xs-12">
+						<input type="text" class="form-control" name="alamat" id="alamat" value="<%= $par_id ? $data_kegiatan->alamat : 0%>">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="koordinat">Koordinat</label>
+					<div class="col-sm-6 col-xs-12">
+						<input type="text" class="form-control" name="koordinat" id="koordinat" value="<%= $par_id ? $data_kegiatan->koordinat : ''%>">
+					</div>
+				</div>
+			</div>
+			<div id="step-3">
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="target">Target</label>
+					<div class="col-sm-6 col-xs-12">
+						<input type="text" class="form-control text-right" name="target" id="target" value="<%= $par_id ? commify($data_kegiatan->target) : '' %>">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-3 col-xs-12" for="realisasi">Realisasi</label>
+					<div class="col-sm-6 col-xs-12">
+						<input type="text" class="form-control text-right" name="realisasi" id="realisasi" value="<%= $par_id ? commify($data_kegiatan->realisasi) :'' %>">
+					</div>
+				</div>
+			</div>
+			<div id="step-4">
+% my $data_inputKategori = $par_id ? db->kategori->data($data_kegiatan->kategori) : 0;
+% my $data_inputBidang = $par_id ? db->bidang->data($data_kegiatan->bidang) : 0;
+				<div class="col-sm-1"></div>
+				<div class="col-sm-11">
+				<div class="form-group">
+					<div class="col-md-55">
+					<div class="thumbnail">
+					<div class="image view view-first">
+						<!--img style="width: 100%; display: block;" src="/picture/aktifitas_foto?id=<%= $par_id %>&urut=1" alt="image" /-->
+						<img style="width: 100%; display: block;" src="/picture_folder/foto?id=<%= $par_id %>&urut=1" alt="image" />
+						<div class="mask">
+							<p><%= $par_id ? $data_kegiatan->bidang ? $data_inputBidang->nama : ''.' - '.$data_inputKategori->nama .' - '.$data_kegiatan->kegiatan : '' %></p>
+							<div class="tools tools-bottom">
+							</div>
+						</div>
+					</div>
+					<div class="caption collapse">
+						<label class="control-label" for="foto">Ganti</label>
+						<div class="form-group has-feedback">
+							<input type="file" name="foto_1" id="foto_upload" value="">
+						</div>
+					</div>
+					</div>
+					</div>
+					<div class="col-md-55">
+					<div class="thumbnail">
+					<div class="image view view-first">
+						<!--img style="width: 100%; display: block;" src="/picture/aktifitas_foto?id=<%= $par_id %>&urut=2" alt="image" /-->
+						<img style="width: 100%; display: block;" src="/picture_folder/foto?id=<%= $par_id %>&urut=2" alt="image" />
+						<div class="mask">
+							<p><%= $par_id ? $data_kegiatan->bidang ? $data_inputBidang->nama : ''.' - '.$data_inputKategori->nama .' - '.$data_kegiatan->kegiatan : '' %></p>
+							<div class="tools tools-bottom">
+							</div>
+						</div>
+					</div>
+					<div class="caption collapse">
+						<label class="control-label" for="foto">Ganti</label>
+						<div class="form-group has-feedback">
+							<input type="file" name="foto_2" id="foto_upload" value="">
+						</div>
+					</div>
+					</div>
+					</div>
+					<div class="col-md-55">
+					<div class="thumbnail">
+					<div class="image view view-first">
+						<!--img style="width: 100%; display: block;" src="/picture/aktifitas_foto?id=<%= $par_id %>&urut=3" alt="image" /-->
+						<img style="width: 100%; display: block;" src="/picture_folder/foto?id=<%= $par_id %>&urut=3" alt="image" />
+						<div class="mask">
+							<p><%= $par_id ? $data_kegiatan->bidang ? $data_inputBidang->nama : ''.' - '.$data_inputKategori->nama .' - '.$data_kegiatan->kegiatan : '' %></p>
+							<div class="tools tools-bottom">
+							</div>
+						</div>
+					</div>
+					<div class="caption collapse">
+						<label class="control-label" for="foto">Ganti</label>
+						<div class="form-group has-feedback">
+							<input type="file" name="foto_3" id="foto_upload" value="">
+						</div>
+					</div>
+					</div>
+					</div>
+					<div class="col-md-55">
+					<div class="thumbnail">
+					<div class="image view view-first">
+						<!--img style="width: 100%; display: block;" src="/picture/aktifitas_foto?id=<%= $par_id %>&urut=4" alt="image" /-->
+						<img style="width: 100%; display: block;" src="/picture_folder/foto?id=<%= $par_id %>&urut=4" alt="image" />
+						<div class="mask">
+							<p><%= $par_id ? $data_kegiatan->bidang ? $data_inputBidang->nama : ''.' - '.$data_inputKategori->nama .' - '.$data_kegiatan->kegiatan : '' %></p>
+							<div class="tools tools-bottom">
+							</div>
+						</div>
+					</div>
+					<div class="caption collapse">
+						<label class="control-label" for="foto">Ganti</label>
+						<div class="form-group has-feedback">
+							<input type="file" name="foto_4" id="foto_upload" value="">
+						</div>
+					</div>
+					</div>
+					</div>
+				</div>
+				</div>
+			</div>
+			<input type="hidden" name="id" value="<%= $par_id %>">
+		</div>
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

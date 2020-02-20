@@ -1,0 +1,33 @@
+% my $per = param('_per') || 10;
+% my %param;
+% foreach (@$params) { my $val = param($_) || next; $param{$_} = $val }
+% $param{_pg} = param('_pg') if param('_pg');
+% my $param_page = '';
+% foreach my $keys (keys %param){
+% 	$param_page .= $keys.'='.$param{$keys}.'&';
+% }
+% $param_page = substr($param_page,0,-1);
+		<div class="x_title">
+			<ul class="nav navbar-left panel_toolbox pull-left col-sm-6 col-xs-12">
+				<li>Tampilkan
+					<select name="tampilkan" id="tampilkan" class="form-control" data-id="<%= $param_page %>">
+						<option value="10" <%= $per eq 10 ? 'selected' : '' %>>10</option>
+						<option value="25" <%= $per eq 25 ? 'selected' : '' %>>25</option>
+						<option value="50" <%= $per eq 50 ? 'selected' : '' %>>50</option>
+						<option value="100" <%= $per eq 100 ? 'selected' : '' %>>100</option>
+					</select>
+				</li>
+			</ul>
+			<div class="col-sm-6 col-xs-12 text-right">
+% if($id_tambah){
+			<button class="btn btn-round btn-success" id="<%= $id_tambah %>">Tambah</button>
+% }
+% if($id_edit){
+			<button class="btn btn-round btn-warning" id="<%= $id_edit %>">Edit</button>
+% }
+% if($id_hapus){
+			<button class="btn btn-round btn-danger" id="<%= $id_hapus %>">Hapus</button>
+% }
+			</div>
+			<div class="clearfix"></div>
+		</div>

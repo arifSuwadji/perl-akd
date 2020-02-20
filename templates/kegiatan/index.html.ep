@@ -1,0 +1,247 @@
+%= include 'header', title => 'Kegiatan'
+% use CGI::Enurl;
+
+<div class="modal fade modal-kegiatan"  tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal-dialog modal-sm">
+<div class="modal-content">
+	<div class="modal-header btn-danger">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="myModalLabel2">Hapus Kegiatan</h4>
+	</div>
+	<div class="modal-body">
+		<strong>Apakah</strong>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Tidak</button>
+		<button type="button" class="btn btn-danger" id="ya">Ya</button>
+	</div>
+</div>
+</div>
+</div>
+<!-- /modals -->
+
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Kegiatan</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Pencarian <i class="fa fa-search"></i></h2>
+			<ul class="nav navbar-right panel_toolbox">
+				<li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
+			</ul>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content" id="content_hide">
+		<br />
+		<form class="form-horizontal form-label-left input_mask">
+		<div class="col-sm-6 col-xs-12">
+			<label class="control-label col-sm-5 col-xs-12">Dari Tanggal</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<input type="text" class="form-control has-feedback-right single_date" id="dari_tanggal" value="<%= param('dmy1') %>" placeholder="Dari Tanggal">
+				<span class="fa fa-calendar-o form-control-feedback right" aria-hidden="true"></span>
+			</div>
+			<div class="clearfix"></div>
+			<label class="control-label col-sm-5 col-xs-12">Sampai Tanggal</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<input type="text" class="form-control has-feedback-right single_date2" id="sampai_tanggal" value="<%= param('dmy2') %>" placeholder="Sampai Tanggal">
+				<span class="fa fa-calendar-o form-control-feedback right" aria-hidden="true"></span>
+			</div>
+			<div class="clearfix"></div>
+% my $data_bidang = db->bidang->data();
+			<label class="control-label col-sm-5 col-xs-12">Bidang</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<select class="form-control select2" id="bidang" name="bidang" data-placeholder="Pilih Bidang">
+					<option value=""></option>
+% my $par_bidang = param('bidang');
+% while(my $bidang = $data_bidang->next){
+					<option value="<%= $bidang->id %>" <%= $par_bidang == $bidang->id ? 'selected' : '' %>><%= $bidang->nama %></option>
+% }	
+				</select>
+			</div>
+			<div class="clearfix"></div>
+% my $data_induk = db->kategori->induk();
+			<label class="control-label col-sm-5 col-xs-12">Kategori</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<select class="form-control select2" id="kategori" name="kategori" data-placeholder="Pilih Kategori">
+					<option value=""></option>
+% my $par_induk = param('kategori');
+% while(my $induk = $data_induk->next){
+					<option value="<%= $induk->id %>" <%= $par_induk == $induk->id ? 'selected' : '' %>><%= $induk->nama %></option>
+% }	
+				</select>
+			</div>
+			<div class="clearfix"></div>
+			<label class="control-label col-sm-5 col-xs-12" for="kegiatan">Kegiatan</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<input type="text" class="form-control" name="kegiatan" id="kegiatan" value="<%= param('kegiatan') %>">
+			</div>
+		</div>
+		<div class="col-sm-6 col-xs-12">
+% my $data_dpd = db->dpd->data();
+			<label class="control-label col-sm-5 col-xs-12">DPD</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<select class="form-control select2" id="dpd" name="dpd" data-placeholder="Pilih DPD">
+					<option value=""></option>
+% my $par_dpd = param('dpd') || 0;
+% while(my $dpd = $data_dpd->next){
+					<option value="<%= $dpd->id %>" <%= $par_dpd == $dpd->id ? 'selected' : '' %>><%= $dpd->nama %></option>
+% }	
+				</select>
+			</div>
+			<div class="clearfix"></div>
+% my $data_kecamatan = db->dpd->kecamatan();
+			<label class="control-label col-sm-5 col-xs-12" for="kecamatan">Kecataman</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<select class="form-control select2" name="kecamatan" id="kecamatan" data-placeholder="Pilih Kecamatan">
+					<option value=""></option>
+% my $par_kecamatan = param('kecamatan') || 0;
+% while(my $kec = $data_kecamatan->next){
+					<option id="opt_kecamatan" value="<%= $kec->id %>" <%= $par_kecamatan == $kec->id ? 'selected' : '' %>><%= $kec->nama %></option>
+% }
+				</select>
+			</div>
+			<div class="clearfix"></div>
+			<label class="control-label col-sm-5 col-xs-12" for="kelurahan">Kelurahan</label>
+			<div class="col-sm-7 col-xs-12 form-group has-feedback">
+				<select class="form-control select2" name="kelurahan" id="kelurahan" data-placeholder="Pilih Kelurahan">
+					<option value=""></option>
+% my $par_kelurahan = param('kelurahan') || 0;
+% my $data_kelurahan = db->dpd->kelurahan();
+% while(my $kel = $data_kelurahan->next){
+					<option id="opt_kelurahan" value="<%= $kel->id %>" <%= $par_kelurahan == $kel->id ? 'selected' : '' %>><%= $kel->nama %></option>
+% }
+				</select>
+			</div>
+			<div class="clearfix"></div>
+			<label class="control-label col-sm-5 col-xs-12" for="rw">RW</label>
+			<div class="col-sm-7 col-xs-12">
+				<select class="form-control select2" name="rw" id="rw" data-placeholder="Pilih RW">
+					<option value=""></option>
+% my $par_rw = param('rw') || 0;
+% foreach(1 .. 40){
+					<option value="<%= sprintf('%0.2d',$_) %>" <%= $par_rw == $_ ? 'selected' : '' %>><%= sprintf('%0.2d', $_) %></option>
+% }
+				</select>
+			</div>
+		</div>
+		<div class="clearfix"></div>
+		<div class="ln_solid"></div>
+		<div class="form-group">
+			<div class="col-sm-9 col-xs-12 col-sm-offset-3">
+				<button type="button" class="btn btn-success" id="cari_data">Cari</button>
+			</div>
+		</div>
+		</form>
+		</div>
+	</div>
+	</div>
+	<div class="row">
+	<div class="x_panel">
+% my %button_akses = %{$c->session->{pemetaan}};
+<%= include 'pager_header_data', id_tambah => '', id_edit => $button_akses{38} ? 'edit_kegiatan' : '', id_detail => $button_akses{29} ? 'detail_kegiatan' : '', id_nilai => $button_akses{30} ? 'nilai_kegiatan' : '', id_hapus => '', id_excel => 'download_excel', url_excel => '/misc/kegiatan/data_kegiatan.xls', params => [qw/dmy1 dmy2 kategori kegiatan dpd kecamatan kelurahan rw/] %>
+% my $rs = db->aktifitas->list(\&param);
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning alert-dismissible fade in" role="alert">
+				<strong><span id="judul"></span> <i class="fa" id="icon"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+%	my $judul ='Pemberitahuan';
+%	my $fa_icon = 'fa-info';
+%	my $alert = 'alert-success';
+%	if($info =~ /hapus/){
+%		$judul = 'Hapus';
+%		$fa_icon = 'fa-times';
+%		$alert = 'alert-danger';
+%	}
+		<div class="info text-center">
+			<div class="alert <%= $alert %> alert-dismissible fade in" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong><%= $judul %> <i class="fa <%= $fa_icon %>"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+			<div class="table table-responsive">
+			<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr class="btn-dark">
+					<th class="text-center" rowspan="2" style="vertical-align:middle;">#</th>
+					<th class="text-center" colspan="5">Data Kegiatan</th>
+					<th class="text-center" colspan="4">Lokasi Kegiatan</th>
+					<th class="text-center" colspan="3">Jumlah Peserta</th>
+					<th class="text-center" colspan="2">Penilaian</th>
+					<th class="text-center" rowspan="2" style="vertical-align:middle;"><input type="checkbox" class="flat" id="checkAll"></th>
+				</tr>
+				<tr class="btn-dark">
+					<th class="text-center">Tanggal</th>
+					<th class="text-center">Bidang</th>
+					<th class="text-center">Kategori</th>
+					<th class="text-center">Kegiatan</th>
+					<th class="text-center">Deskripsi</th>
+					<th class="text-center">DPD</th>
+					<th class="text-center">Kecamatan</th>
+					<th class="text-center">Kelurahan</th>
+					<th class="text-center">RW</th>
+					<th class="text-center">Target</th>
+					<th class="text-center">Realisasi</th>
+					<th class="text-center">Persen</th>
+					<th class="text-center">Tipe</th>
+					<th class="text-center">Skor</th>
+				</tr>
+			</thead>
+			<tbody>
+% my $i = $rs->pager->entries_per_page * ($rs->pager->current_page - 1);
+% my $dapat = 0;
+% while(my $row = $rs->next){
+%	$dapat = 1;
+%	my $bidang = db->bidang->data($row->bidang);
+%	my $kategori = db->kategori->data($row->kategori);
+%	my $kelurahan = db->dpd->kelurahan($row->kelurahan);
+%	my $kecamatan = db->dpd->kecamatan($kelurahan->kecamatan);
+%	my $dpd = db->dpd->data($kecamatan->dpd);
+%	my $nilai = db->aktifitas->data_skor($row->id);
+%	my $persen = sprintf('%.2f',$row->realisasi / $row->target * 100);
+				<tr>
+					<td class="text-right" style="vertical-align:middle;"><%= ++$i %></td>
+					<td style="vertical-align:middle;"><%= db->format_ts($row->ts_aktifitas) %></td>
+					<td style="vertical-align:middle;"><%= $row->bidang ? $bidang->nama : '' %></td>
+					<td style="vertical-align:middle;"><%= $kategori->nama %></td>
+					<td style="vertical-align:middle;"><%= $row->kegiatan %></td>
+					<td style="vertical-align:middle;"><%= $row->keterangan %></td>
+					<td style="vertical-align:middle;"><%= $dpd->nama %></td>
+					<td style="vertical-align:middle;"><%= $kecamatan->nama %></td>
+					<td style="vertical-align:middle;"><%= $kelurahan->nama %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= $row->rw %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= commify($row->target) %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= commify($row->realisasi) %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= $persen > 0 ? $persen.'%' : '' %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= $nilai ? $nilai->tipe eq 'frekuensi' ? 'Frekuensi' : 'Jumlah Peserta' : '' %></td>
+					<td class="text-center" style="vertical-align:middle;"><%= $nilai ? $nilai->skor : ''%></td>
+					<td class="text-center" style="vertical-align:middle;"><input type="checkbox" class="flat" id="data_kegiatan" value="<%= $row->id %>" data-name="<%= $kategori->nama %>"></td>
+				</tr>
+% }
+% unless($dapat){
+				<tr><td colspan="7">Data tidak ditemukan</td></tr>
+% }
+			</tbody>
+			</table>
+			</div>
+		</div>
+% if($dapat){
+<%= include 'pager', rs => $rs, i => $i, params => [qw/dmy1 dmy2 kategori kegiatan dpd kecamatan kelurahan rw/] %>
+% }
+	</div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+
+%= include 'footer'

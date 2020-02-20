@@ -1,0 +1,61 @@
+% my $par_id = param('id') || '';
+% my $aktifitas = db->aktifitas->data($par_id);
+% my $data_sub = db->kategori->data($aktifitas->kategori);
+% my $induk_sub = $par_id ? db->kategori->data($data_sub->induk_id) : 0;
+<div class="modal-dialog">
+<div class="modal-content">
+	<div class="modal-header btn-dark">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		<h4 class="modal-title" id="myModalLabel2"><%= $induk_sub->nama %> - <%= $data_sub->nama %></h4>
+	</div>
+	<div class="modal-body">
+		<!-- start accordion -->
+		<div class="accordion" id="accordion" role="tablist" aria-multiselectable="true">
+		<div class="panel">
+			<a class="panel-heading" role="tab" id="headingOne" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+				<h4 class="panel-title">Deskripsi</h4>
+			</a>
+			<div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+			<div class="panel-body">
+				<p><%= db->format_ts($aktifitas->ts_aktifitas, 1) %></p>
+				<%= $aktifitas->keterangan %>
+			</div>
+			</div>
+		</div>
+		<div class="panel">
+			<a class="panel-heading collapsed" role="tab" id="headingTwo" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+				<h4 class="panel-title">Foto</h4>
+			</a>
+			<div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-sm-6 col-xs-12">
+						<img class="thumbnail" src="/picture_folder/foto?id=<%= $par_id %>&urut=1" alt="tidak ada foto">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 col-xs-12">
+						<img class="thumbnail" src="/picture_folder/foto?id=<%= $par_id %>&urut=2" alt="tidak ada foto">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 col-xs-12">
+						<img class="thumbnail" src="/picture_folder/foto?id=<%= $par_id %>&urut=3" alt="tidak ada foto">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 col-xs-12">
+						<img class="thumbnail" src="/picture_folder/foto?id=<%= $par_id %>&urut=4" alt="tidak ada foto">
+					</div>
+
+				</div>
+			</div>
+			</div>
+		</div>
+		</div>
+		<!-- end of accordion -->
+	</div>
+	<div class="modal-footer">
+	</div>
+</div>
+</div>

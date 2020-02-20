@@ -1,0 +1,78 @@
+%= include 'header', title => 'Tambah Kategori'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Tambah Kategori</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Isi Data Kategori</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+		<br />
+		<form id="tambah_kategori" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/kategori/index">
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="nama">Nama</label>
+				<div class="col-sm-4 col-xs-12 has-feedback">
+					<input type="text" id="nama" name="nama" class="form-control" value="<%= param('kode') %>" placeholder="Nama kategori">
+					<span class="fa fa-pencil-square-o form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="form-group collapse">
+				<label class="control-label col-sm-3 col-xs-12" for="tipe">Tipe</label>
+				<div class="col-sm-4 col-xs-12">
+					<div class="radio">
+						<label><input type="radio" class="flat2" id="tipe" checked name="tipe" value="induk"> Kategori</label>
+						<label><input type="radio" class="flat2" id="tipe" name="tipe" value="sub"> Sub Kategori</label>
+					</div>
+				</div>
+			</div>
+% my $data_induk = db->kategori->induk();
+			<div class="form-group collapse" id="group_induk">
+				<label class="control-label col-sm-3 col-xs-12">Induk</label>
+				<div class="col-sm-4 col-xs-12 has-feedback">
+					<select class="form-control induk" name="induk_id" data-placeholder="Pilih induk kategori">
+						<option value=""></option>
+% my $par_induk = param('induk') || 0;
+% while(my $induk = $data_induk->next){
+						<option value="<%= $induk->id %>" <%= $par_induk == $induk->id ? 'selected' : '' %>><%= $induk->nama %></option>
+% }	
+					</select>
+				</div>
+			</div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-3">
+				<button type="button" class="btn btn-success" id="simpan_kategori">Simpan</button>
+			</div>
+			</div>
+
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

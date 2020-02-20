@@ -1,0 +1,103 @@
+%= include 'header', title => 'Edit Admin'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Edit Admin</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Edit Data Admin</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+		<br />
+		<form id="edit_admin" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/admin/index">
+% my $par_admin = param('id') || '';
+% my $data = db->admin->data($par_admin);
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="admin">Admin</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="text" id="admin" name="username" class="form-control" value="<%= $par_admin ? $data->username : '' %>" placeholder="admin">
+					<span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="form-group collapse" id="new_password">
+				<label class="control-label col-sm-3 col-xs-12" for="password">Password Baru</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="password" id="password" name="password" class="form-control" value="" placeholder="password">
+					<span class="fa fa-lock form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+% if($par_admin == $c->session->{user}{id} || $c->session->{user}{admin_grup} == 1){
+			<div class="form-group" id="hide_unlock">
+				<label class="control-label col-sm-3 col-xs-12" for="password">Ganti Password</label>
+				<div class="col-sm-4 col-xs-12">
+					<button type="button" class="btn btn-danger" id="unlock_password"><i class="fa fa-unlock"></i></button>
+				</div>
+			</div>
+% }
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="nama_lengkap">Nama Lengkap</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="text" id="nama_lengkap" name="nama_lengkap" class="form-control" value="<%= $par_admin ? $data->nama_lengkap : '' %>" placeholder="nama lengkap">
+					<span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+% my $data_grup = db->admin->data_grup();
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="admin_grup">Admin Grup</label>
+				<div class="col-sm-4 col-xs-12">
+					<select class="form-control" name="admin_grup" id="admin_grup" data-placeholder="pilih admin grup">
+						<option value=""></option>
+% while(my $grup = $data_grup->next){
+						<option value="<%= $grup->id %>" <%= $par_admin ? $data->admin_grup == $grup->id ? 'selected' : '' : '' %>><%= $grup->nama %></option>
+% }
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="status">Status</label>
+				<div class="col-sm-4 col-xs-12">
+					<select class="form-control" name="status" id="status" data-placeholder="pilih status">
+						<option value=""></option>
+						<option value="aktif" <%= $par_admin ? $data->status eq 'aktif' ? 'selected' : '' : '' %>>Aktif</option>
+						<option value="tidak" <%= $par_admin ? $data->status eq 'tidak' ? 'selected' : '' : '' %>>Tidak Aktif</option>
+					</select>
+				</div>
+			</div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-3">
+				<input type="hidden" name="id" value="<%= $par_admin %>">
+				<button type="button" class="btn btn-success" id="simpan_admin" data-id="1">Simpan</button>
+			</div>
+			</div>
+
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

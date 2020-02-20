@@ -1,0 +1,4 @@
+<script>
+	window.location.replace("/logout");
+</script>
+<h4>redirecting.. </h4>

@@ -1,0 +1,50 @@
+%= include 'header', title => 'Halaman Utama'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Dasbor</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="x_panel">
+		<div class="row top_tiles">
+			<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a href="/kegiatan/entri_kegiatan">
+				<div class="icon"><i class="fa fa-pencil-square-o right"></i></div>
+				<div class="count">Entri</div>
+				<h3>Kegiatan</h3>
+				<p>input data aktifitas dakwah.</p>
+			</a></div>
+			</div>
+			<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a href="/kegiatan/index?dmy1=<%= db->now->dmy %>&dmy2=<%= db->now->dmy %>">
+				<div class="icon"><i class="fa fa-file right"></i></div>
+				<div class="count">Data</div>
+				<h3>Kegiatan</h3>
+				<p>data aktifitas dakwah.</p>
+			</a></div>
+			</div>
+			<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a href="/kegiatan/grafik_kegiatan?my1=<%= db->now->mon %>-<%= db->now->year %>">
+				<div class="icon"><i class="fa fa-pie-chart right"></i></div>
+				<div class="count">Grafik</div>
+				<h3>Kegiatan</h3>
+				<p>grafik kegiatan aktifitas dakwah.</p>
+			</a></div>
+			</div>
+			<div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+			<div class="tile-stats"><a href="/kegiatan/peta_kegiatan?dmy1=<%= db->now->mon %>-<%= db->now->year %>">
+				<div class="icon"><i class="fa fa-map-marker right"></i></div>
+				<div class="count">Peta</div>
+				<h3>Kegiatan</h3>
+				<p>peta kegiatan aktifitas dakwah.</p>
+			</a></div>
+			</div>
+		</div>
+	</div>
+</div>
+        <!-- /page content -->
+
+%= include 'footer'

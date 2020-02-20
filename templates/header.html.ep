@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><%= $config::nama_aplikasi %> | <%= $title %></title>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="<%= $config::url_imageIcon %>" sizes="16x16 32x32" type="image/png">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+% if($c->req->url->path eq '/home/index'){
+    <link href="/vendors/bootstrap/dist/css/bootstrap-year-calendar.min.css" rel="stylesheet">
+% }
+    <!-- PNotify -->
+    <link href="/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="/vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="<%= url_for('/home/index') %>?year=<%= db->now->year %>" class="site_title"><i class="fa fa-male"></i> <span><%=$config::nama_navbar%></span></a>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <br />
+% my %pemetaan = %{$c->session->{pemetaan}};
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3><%= $config::nama_aplikasi %></h3>
+                <ul class="nav side-menu">
+% if($pemetaan{1}){
+                  <li><a href="<%= url_for('/home/index') %>?year=<%= db->now->year %>"><i class="fa fa-home"></i> Dasbor</a></li>
+% }
+% if($pemetaan{2} or $pemetaan{5} or $pemetaan{10} or $pemetaan{14} or $pemetaan{18} or $pemetaan{22}){
+                  <li><a><i class="fa fa-database"></i> Master <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+%	if($pemetaan{2} or $pemetaan{5}){
+                      <li><a>Master Admin <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{2}){
+                           <li class="sub_menu"><a href="<%= url_for('/admin/index') %>?status=aktif">Admin</a></li>
+%		}
+%		if($pemetaan{5}){
+                           <li class="sub_menu"><a href="<%= url_for('/admin/admin_grup') %>">Admin Grup</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+%	if($pemetaan{10} or $pemetaan{14} or $pemetaan{18} or $pemetaan{33}){
+                       <li><a> Master DPD <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{10}){
+                           <!--li class="sub_menu"><a href="<%= url_for('/dpd/index') %>">DPD</a></li-->
+%		}
+%		if($pemetaan{14}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/kecamatan') %>">Kecamatan</a></li>
+%		}
+%		if($pemetaan{18}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/kelurahan') %>">Kelurahan</a></li>
+%		}
+%		if($pemetaan{33}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/upload_kecamatan') %>">Upload Kecamatan & Kelurahan</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+%	if($pemetaan{34}){
+                       <li><a> Master Bidang <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{24}){
+                           <li class="sub_menu"><a href="<%= url_for('/bidang/index') %>">Bidang</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+%	if($pemetaan{22}){
+                       <li><a> Master Kategori <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{22}){
+                           <li class="sub_menu"><a href="<%= url_for('/kategori/index') %>">Kategori</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+                    </ul>
+                  </li>
+% }
+% if($pemetaan{27} or $pemetaan{28} or $pemetaan{31}){
+                  <li><a><i class="fa fa-street-view"></i> Kegiatan <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+%	if($pemetaan{27}){
+                      <li><a href="<%= url_for('/kegiatan/index') %>?dmy1=<%= db->now->dmy %>&dmy2=<%= db->now->dmy %>"> Data Kegiatan</a></li>
+%	}
+%	if($pemetaan{28}){
+                      <li><a href="<%= url_for('/kegiatan/entri_kegiatan') %>"> Entri Kegiatan</a></li>
+%	}
+%	if($pemetaan{31}){
+                      <li><a href="<%= url_for('/kegiatan/grafik_kegiatan') %>?my1=<%= sprintf('%0.2d', db->now->mon) %>-<%= db->now->year %>"> Grafik Kegiatan</a></li>
+%	}
+%	if($pemetaan{32}){
+                      <li><a href="<%= url_for('/kegiatan/peta_kegiatan') %>?dmy1=<%= sprintf('%0.2d', db->now->mon) %>-<%= db->now->year %>"> Peta Kegiatan</a></li>
+%	}
+                    </ul>
+                  </li>
+% }
+% if($pemetaan{26}){
+                  <li><a><i class="fa fa-wrench"></i> Pengaturan <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+% 	if($pemetaan{26}){
+                      <li><a href="<%= url_for('/pengaturan/hak_akses') %>"> Hak Akses</a>
+% 	}
+                    </ul>
+                  </li>
+% }
+                </ul>
+              </div>
+            </div>
+            <!-- /sidebar menu -->
+
+          </div>
+        </div>
+
+        <!-- top navigation -->
+        <div class="top_nav">
+          <div class="nav_menu">
+            <nav>
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+
+              <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-user fa-5x fa-fw"></i> <%= $c->session->{user}{nama_lengkap} %>
+                    <span class=" fa fa-angle-down"></span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-usermenu pull-right">
+                    <li><a href="<%= url_for('/logout') %>"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- /top navigation -->

@@ -1,0 +1,76 @@
+%= include 'header', title => 'Tambah Kecamatan'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Tambah Kecamatan</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+		<div class="x_title">
+			<h2>Isi Data Kecamatan</h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+		<br />
+		<form id="tambah_kecamatan" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/dpd/kecamatan">
+			<div class="clearfix"></div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="kode">kode</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="text" id="kode" name="kode" class="form-control" value="<%= param('kode') %>" placeholder="kode kecamatan">
+					<span class="fa fa-qrcode form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="nama">nama</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="text" id="nama" name="nama" class="form-control" value="<%= param('nama') %>" placeholder="nama kecamatan">
+					<span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+% my $data_dpd = db->dpd->data();
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12">DPD</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<select class="form-control dpd" name="dpd" data-placeholder="Pilih DPD">
+						<option value=""></option>
+% my $par_dpd = param('dpd') || $config::dpd;
+% while(my $dpd = $data_dpd->next){
+						<option value="<%= $dpd->id %>" <%= $par_dpd == $dpd->id ? 'selected' : '' %>><%= $dpd->nama %></option>
+% }	
+					</select>
+				</div>
+			</div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-3">
+				<button type="button" class="btn btn-success" id="simpan_kecamatan">Simpan</button>
+			</div>
+			</div>
+
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

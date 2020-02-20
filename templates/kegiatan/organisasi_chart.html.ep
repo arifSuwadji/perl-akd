@@ -1,0 +1,105 @@
+% my %kategori;
+% my $jumlah = 0;
+% my @data_value = (83,48,37,92,19,18,19,81,21,56);
+% my $i = 0;
+% foreach(qw/DS CK JN MT PG PR CP KJ MK CR/){
+%	$kategori{$_} = $data_value[$i];
+%	$jumlah += $data_value[$i];
+%	$i++;
+% }
+<script>
+
+$(function () {
+var colors = Highcharts.getOptions().colors,
+	categories = ['Organisasi'],
+	data = [{
+		y: 16,
+		color: colors[4],
+		drilldown: {
+			name: 'Organisasi',
+			categories: ['DS', 'CK', 'JN', 'MT', 'PG', 'PR','CP','KJ','MK','CR'],
+			data: [<%= sprintf('%.2f',($kategori{DS} / $jumlah) * 100) %>, <%= sprintf('%.2f',($kategori{CK} / $jumlah) * 100) %>, <%= sprintf('%.2f',($kategori{JN} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{MT} / $jumlah) * 100) %>, <%= sprintf('%.2f',($kategori{PG} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{PR} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{CP} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{KJ} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{MK} / $jumlah) * 100)%>, <%= sprintf('%.2f',($kategori{CR} / $jumlah) * 100)%>],
+			color: colors[0]
+		}
+	}],
+	browserData = [],
+	versionsData = [],
+	i,
+	j,
+	dataLen = data.length,
+	drillDataLen,
+	brightness;
+
+	// Build the data arrays
+	for (i = 0; i < dataLen; i += 1) {
+
+		// add browser data
+		browserData.push({
+			name: categories[i],
+			y: data[i].y,
+			color: data[i].color
+		});
+
+		// add version data
+		drillDataLen = data[i].drilldown.data.length;
+		for (j = 0; j < drillDataLen; j += 1) {
+			brightness = 0.2 - (j / drillDataLen) / 5;
+			versionsData.push({
+				name: data[i].drilldown.categories[j],
+				y: data[i].drilldown.data[j],
+				color: Highcharts.Color(data[i].color).brighten(brightness).get()
+			});
+		}
+	}
+
+	// Create the chart
+	Highcharts.chart('organisasi', {
+		chart: {
+			type: 'pie'
+		},
+		title: {
+			text: 'Aktifitas Dakwah DPD PKS Jakarta Timur'
+		},
+		subtitle: {
+			text: '<a href="#">Organisasi</a>'
+		},
+		yAxis: {
+			title: {
+				text: 'Total prosentase kegiatan'
+			}
+		},
+		plotOptions: {
+			pie: {
+				shadow: true,
+				center: ['50%', '50%']
+			}
+		},
+		tooltip: {
+			valueSuffix: '%'
+		},
+		series: [{
+			name: 'Pencapaian',
+			data: browserData,
+			size: '60%',
+			dataLabels: {
+				formatter: function () {
+					return this.y > 5 ? this.point.name + ': '+ this.y + '%' : null;
+				},
+				color: '#ffffff',
+				distance: -30
+			}
+		}, {
+			name: 'Pencapaian',
+			data: versionsData,
+			size: '80%',
+			innerSize: '60%',
+			dataLabels: {
+				formatter: function () {
+					// display only if larger than 1
+					return this.y > 1 ? '<b>' + this.point.name + ':</b> ' + this.y + '%' : null;
+				}
+			}
+		}]
+	});
+});
+</script>

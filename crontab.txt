@@ -1,0 +1,1 @@
+* * * * * ./check.pl >> /log/akd/check.log 2>&1 &

@@ -1,0 +1,70 @@
+%= include 'header', title => 'Peta Kegiatan'
+
+<div class="modal fade modal-detail"  tabindex="-1" role="dialog" aria-hidden="true">
+
+</div>
+<!-- /modals -->
+
+<style>
+body .container.body .kanan_col {
+  height:100% !important;
+  background: #F7F7F7; }
+
+.nav-md .container.body .kanan_col {
+  padding: 10px 20px 0;
+  margin-left: 230px;
+  height: 50px;
+}
+@media (max-width: 991px) {
+  .nav-md .container.body .kanan_col, .nav-md .container.body .top_nav {
+    width: 100%;
+    margin: 0; }
+
+  .nav-md .container.body .col-md-3.left_col {
+    display: none; }
+
+  .nav-md .container.body .kanan_col {
+    width: 100%;
+    padding-right: 0; }
+
+  .kanan_col {
+    padding: 10px !important; } }
+
+@media (min-width: 991px) {
+  .nav-md .container.body .kanan_col, .nav-md .container.body .top_nav {
+    width: 100%;
+    margin: 0; }
+
+  .nav-md .container.body .col-md-3.left_col {
+    display: none; }
+
+  .nav-md .container.body .kanan_col {
+    width: 100%;
+    padding-right: 0; }
+
+  .kanan_col {
+    padding: 10px !important; } }
+
+
+.nav-sm .container.body .kanan_col {
+  padding: 10px 20px;
+  margin-left: 70px;
+  z-index: 2; }
+</style>
+<div class="kanan_col col-md-12 col-sm-12 col-xs-12">
+% my %param;
+% my @params = (qw/kecamatan kelurahan/);
+% foreach (@params) { my $val = param($_) || next; $param{$_} = $val }
+% my $param_page = '';
+% foreach my $keys (keys %param){
+% 	$param_page .= $keys.'='.$param{$keys}.'&';
+% }
+% $param_page = substr($param_page,0,-1);
+	<div class="col-sm-2 col-xs-8">
+		<div class="has-feedback">
+			<input type="text" class="form-control has-feedback-right date" id="bulan" data-id="<%= $param_page %>" value="<%= param('dmy1') %>" placeholder="Bulan">
+			<span><i class="fa fa-calendar-o form-control-feedback right"></i></span>
+		</div>
+	</div>
+</div>
+%= include 'footer'

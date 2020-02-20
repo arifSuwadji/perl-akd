@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><%= $config::nama_aplikasi %> | Login</title>
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="<%= $config::url_imageIcon %>" sizes="16x16 32x32" type="image/png">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="/vendors/animate.css/animate.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+  </head>
+
+  <body class="login">
+    <div>
+      <a class="hiddenanchor" id="signin"></a>
+
+% my $info = param('info') || '';
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            <form action="/login" method="post" data-parsley-validate>
+              <h1>Silahkan Login</h1>
+              <div class="form-group has-feedback">
+                <input type="text" class="form-control" name="username" placeholder="nama user" required="nama user belum disii" autofocus/>
+                <span class="fa fa-user form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="password" class="form-control" name="password" placeholder="password" required="" />
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+              </div>
+% if($info){
+              <div class="x_content bs-example-popovers">
+                <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close" area-hidden="true">&times;</button>
+                  <strong>Peringatan <i class="fa fa-warning"></i></strong> <br><%= $info %>
+                </div>
+              </div>
+% }
+              <div class="row">
+                  <div class="col-xs-12">
+                      <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button>
+                  </div><!-- /.col -->
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <div>
+                  <h1><i class="fa fa-male"></i> <%= $config::nama_aplikasi %></h1>
+                  <p>©2016 All Rights Reserved. <%= $config::nama_dpd %></p>
+                </div>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    <!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Parsley -->
+    <script src="/vendors/parsleyjs/dist/parsley.min.js"></script>
+    </div>
+  </body>
+</html>

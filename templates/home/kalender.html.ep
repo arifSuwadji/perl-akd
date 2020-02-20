@@ -1,0 +1,93 @@
+% my $tahun = param('year') || db->now->year;
+% $tahun =~ s/\s//;
+% my $kegiatan = db->aktifitas->data_kalender($tahun); 
+% my %data_kegiatan;
+% my($tanggal,$jam);
+% while(my $row = $kegiatan->next){
+%	($tanggal, $jam) = split/\s/, $row->ts_aktifitas;
+%	my $bidang = db->bidang->data($row->bidang);
+%	my $nama_bidang = $row->bidang ? $bidang->nama: '';
+%	my $data_kategori = db->kategori->data($row->kategori);
+%	$data_kegiatan{$tanggal}{$jam} = $nama_bidang.' - '.$data_kategori->nama;
+% }
+% my @tgl_genap = qw/02 04 06 08 10 12 14 16 18 20 22 24 28 30/;
+<script>
+$(document).ready(function(){
+	var currentYear = new Date().getFullYear();
+
+	$(".x_panel").find(".x_content .kalender_kegiatan").calendar({
+		startYear: <%= $tahun %>,
+		enableContextMenu: true,
+		enableRangeSelection: true,
+		contextMenuItems: [
+			{
+				text: 'Update',
+				click: editEvent
+			}
+		],
+		selectRange: function(e) {
+			editEvent({ startDate: e.startDate, endDate: e.endDate });
+		},
+		mouseOnDay: function(e) {
+			if(e.events.length > 0) {
+				var content = '';
+
+				for(var i in e.events) {
+					content += '<div class="event-tooltip-content">'
+					+ '<div class="event-name text-primary">' + e.events[i].name + '</div>'
+					+ '</div>';
+				}
+
+				$(e.element).popover({
+					trigger: 'manual',
+					container: 'body',
+					html:true,
+					content: content
+				});
+
+				$(e.element).popover('show');
+			}
+		},
+		mouseOutDay: function(e) {
+			if(e.events.length > 0) {
+				$(e.element).popover('hide');
+			}
+		},
+		dayContextMenu: function(e) {
+			$(e.element).popover('hide');
+		},
+		style:'background',
+		dataSource: [
+% my $i = 0;
+% foreach my $tgl (sort keys %data_kegiatan){
+% 	my @arr_tgl = split /\-/, $tgl;
+%	foreach my $jam (keys %{$data_kegiatan{$tgl}}){
+%	my $warna_tgl = '#28A828';#green
+%	foreach(@tgl_genap){
+%		if($arr_tgl[2] == $_){
+%			$warna_tgl= '#5bc0de';
+%			last;
+%		}
+%	}
+			{
+				id: <%= $i %>,
+				name: '<%= $data_kegiatan{$tgl}{$jam} %>',
+				startDate: new Date(<%= $arr_tgl[0] %>, <%= $arr_tgl[1]-1 %>, <%= $arr_tgl[2] %>),
+				endDate: new Date(<%= $arr_tgl[0] %>, <%= $arr_tgl[1]-1 %>, <%= $arr_tgl[2] %>),
+				color: '<%= $warna_tgl%>',//green
+			},
+%       }
+%       ++$i;
+% }
+		],
+		customDayRenderer: function(element, date) {
+% foreach my $tgl (sort keys %data_kegiatan){
+%	my @arr_tgl = split /\-/, $tgl;
+			if(date.getTime() == new Date(<%= $arr_tgl[0] %>, <%= $arr_tgl[1]-1 %>, <%= $arr_tgl[2] %>).getTime()) {
+				$(element).css('color', '#C3C3C3');
+			}
+% }
+                },
+	});
+});
+</script>

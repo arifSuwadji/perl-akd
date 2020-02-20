@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>DPD - Aplikasi Aktifitas Dakwah | Peta</title>
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" href="/img/pks.png" sizes="16x16 32x32" type="image/png">
+    <!-- Font Awesome -->
+    <link href="/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- PNotify -->
+    <link href="/vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="/vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="/vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+    <!-- Select2 -->
+    <link href="/vendors/select2/dist/css/select2.min.css" rel="stylesheet">
+
+    <!-- Custom Theme Style -->
+    <link href="/build/css/custom.min.css" rel="stylesheet">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 88.6%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 80px;
+        left: 30%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+    </style>
+  </head>
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="<%= url_for('/home/index') %>" class="site_title"><i class="fa fa-male"></i> <span>Aktifitas Dakwah</span></a>
+            </div>
+
+            <div class="clearfix"></div>
+            <br />
+% my %pemetaan = %{$c->session->{pemetaan}};
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+                <h3>Aplikasi Aktifitas Dakwah</h3>
+                <ul class="nav side-menu">
+% if($pemetaan{1}){
+                  <li><a href="<%= url_for('/home/index') %>"><i class="fa fa-home"></i> Dasbor</a></li>
+% }
+% if($pemetaan{2} or $pemetaan{5} or $pemetaan{10} or $pemetaan{14} or $pemetaan{18} or $pemetaan{22}){
+                  <li><a><i class="fa fa-database"></i> Master <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+%	if($pemetaan{2} or $pemetaan{5}){
+                      <li><a>Master Admin <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{2}){
+                           <li class="sub_menu"><a href="<%= url_for('/admin/index') %>?status=aktif">Admin</a></li>
+%		}
+%		if($pemetaan{5}){
+                           <li class="sub_menu"><a href="<%= url_for('/admin/admin_grup') %>">Admin Grup</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+%	if($pemetaan{10} or $pemetaan{14} or $pemetaan{18}){
+                       <li><a> Master DPD <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{10}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/index') %>">DPD</a></li>
+%		}
+%		if($pemetaan{14}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/kecamatan') %>">Kecamatan</a></li>
+%		}
+%		if($pemetaan{18}){
+                           <li class="sub_menu"><a href="<%= url_for('/dpd/kelurahan') %>">Kelurahan</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+%	if($pemetaan{22}){
+                       <li><a> Master kategori <span class="fa fa-chevron-down"></span></a>
+                         <ul class="nav child_menu">
+%		if($pemetaan{22}){
+                           <li class="sub_menu"><a href="<%= url_for('/kategori/index') %>">Kategori</a></li>
+%		}
+                         </ul>
+                       </li>
+%	}
+                    </ul>
+                  </li>
+% }
+% if($pemetaan{27} or $pemetaan{28} or $pemetaan{31}){
+                  <li><a><i class="fa fa-street-view"></i> Kegiatan <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+%	if($pemetaan{27}){
+                      <li><a href="<%= url_for('/kegiatan/index') %>?dmy1=<%= db->now->dmy %>&dmy2=<%= db->now->dmy %>"> Data Kegiatan</a></li>
+%	}
+%	if($pemetaan{28}){
+                      <li><a href="<%= url_for('/kegiatan/entri_kegiatan') %>"> Entri Kegiatan</a></li>
+%	}
+%	if($pemetaan{31}){
+                      <li><a href="<%= url_for('/kegiatan/grafik_kegiatan') %>"> Grafik Kegiatan</a></li>
+%	}
+%	if($pemetaan{32}){
+                      <li><a href="<%= url_for('/kegiatan/peta_kegiatan') %>"> Map Kegiatan</a></li>
+%	}
+                    </ul>
+                  </li>
+% }
+                  <!--li><a><i class="fa fa-file"></i> Laporan <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a> Kegiatan <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                          <li class="sub_menu"><a href="<%= url_for('/laporan/kegiatan') %>">Data Kegiatan</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li-->
+% if($pemetaan{26}){
+                  <li><a><i class="fa fa-wrench"></i> Pengaturan <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+% 	if($pemetaan{26}){
+                      <li><a href="<%= url_for('/pengaturan/hak_akses') %>"> Hak Akses</a>
+% 	}
+                    </ul>
+                  </li>
+% }
+                </ul>
+              </div>
+            </div>
+            <!-- /sidebar menu -->
+          </div>
+        </div>
+        <!-- top navigation -->
+        <div class="top_nav">
+          <div class="nav_menu">
+            <nav>
+              <div class="nav toggle">
+                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+              </div>
+
+              <ul class="nav navbar-nav navbar-right">
+                <li class="">
+                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <i class="fa fa-user fa-5x fa-fw"></i> <%= $c->session->{user}{nama_lengkap} %>
+                    <span class=" fa fa-angle-down"></span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-usermenu pull-right">
+                    <li><a href="<%= url_for('/logout') %>"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- /top navigation -->
+      </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="/vendors/iCheck/icheck.min.js"></script>
+    <!-- Select2 -->
+    <script src="/vendors/select2/dist/js/select2.full.min.js"></script>
+    <!-- Parsley -->
+    <script src="/vendors/parsleyjs/dist/parsley.min.js"></script>
+    <!-- smart wizard -->
+    <script src="/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src="/js/moment/moment.min.js"></script>
+    <script src="/js/datepicker/daterangepicker.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="/build/js/custom.min.js"></script>
+    <script src="/akd/footer.js"></script>
+
+    <div id="floating-panel">
+% my $par_kecamatan = param('kecamatan') || 0;
+      <select id="kecamatan" class="form-control select2" data-placeholder='pilih kecamatan'>
+	<option value=""></option>
+        <option value="1" <%= $par_kecamatan == 1 ? 'selected' : '' %>>Kramat Jati</option>
+        <option value="2" <%= $par_kecamatan == 2 ? 'selected' : '' %>>Jatinegara</option>
+        <option value="3" <%= $par_kecamatan == 3 ? 'selected' : '' %>>Duren Sawit</option>
+      </select>
+    </div>
+    <div id="map"></div>
+% my $heading = 'Jakarta Timur';
+% my $body = 'Kegiatan DPD PKS Jakarta Timur';
+% my $dpd = 'Jakarta Timur';
+% my $latLng = '-6.2250138,106.90044720000003';
+% my $zoom = 11;
+% if($par_kecamatan){
+%	if($par_kecamatan == 1){
+%		$heading = 'Kramat Jati';
+%		$body = 'Kegiatan DPC PKS Kramat Jati';
+%		$latLng = '-6.2732982,106.86946510000007';
+%		$zoom = 13;
+%	}elsif($par_kecamatan == 2){
+%		$heading = 'Jatinegara';
+%		$body = 'Kegiatan DPC PKS Jatinegara';
+%		$latLng = '-6.2307016,106.8827427';
+%		$zoom = 13;
+%	}elsif($par_kecamatan == 3){
+%		$heading = 'Duren Sawit';
+%		$body = 'Kegiatan DPC PKS Durensawit';
+%		$latLng = '-6.2295409,106.9181532';
+%		$zoom = 13;
+%	}
+% }
+% my %jakartaKoordinat;
+% $jakartaKoordinat{1} = '-6.151526,106.939982';
+% $jakartaKoordinat{2} = '-6.155324,106.940196';
+% $jakartaKoordinat{3} = '-6.155281,106.941870';
+% #$jakartaKoordinat{4} = '-6.156860,106.941913';
+% #$jakartaKoordinat{5} = '-6.156945,106.942857';
+% #$jakartaKoordinat{6} = '-6.157713,106.942943';
+% #$jakartaKoordinat{7} = '-6.158140,106.944574';
+% #$jakartaKoordinat{8} = '-6.163089,106.944402';
+% $jakartaKoordinat{9} = '-6.252256,106.858314';
+% $jakartaKoordinat{10} = '-6.302422,106.920799';
+
+    <script>
+	$(document).ready(function(){
+		$("#floating-panel").find("#kecamatan").on("change", function(){
+			$(location).attr("href","?kecamatan="+$(this).val());
+		});
+	});
+
+	function initMap() {
+		var myLatlng = new google.maps.LatLng(<%= $latLng %>);
+		var mapOptions = {
+			zoom: <%= $zoom %>,
+			center: myLatlng,
+		}
+		var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+		var contentString = '<div id="content">'+
+			'<div id="siteNotice">'+
+			'</div>'+
+			'<h1 id="firstHeading" class="firstHeading"><%= $heading %></h1>'+
+			'<div id="bodyContent">'+
+			'<p><%= $body %></p>'+
+			'<p>website: DPD PKS, <a href="https://www.dpd-pks-jaktim.org">'+
+			'<%= $dpd %></a></p>'+
+			'</div>'+
+			'</div>';
+
+		var infowindow = new google.maps.InfoWindow({
+			content: contentString,
+			maxWidth: 300
+		});
+
+		var marker = new google.maps.Marker({
+			position: myLatlng,
+			title: '<%= $heading %>'
+		});
+		//To add the marker to the map, call setMap()
+		marker.setMap(map);
+
+		marker.addListener('click', function() {
+			infowindow.open(map, marker);
+		});
+		var NewarkHighlight;
+		var mNewarkCoords = new Array;
+% my $i = 0;
+% foreach my $keys (keys %jakartaKoordinat){
+		mNewarkCoords[<%= $i %>] = new google.maps.LatLng(<%= $jakartaKoordinat{$keys} %>);
+%	$i++;
+% }
+		NewarkHighlight = new google.maps.Polygon({
+			paths: mNewarkCoords,
+			strokeColor: "#6666FF",
+			strokeOpacity: 0.8,
+			strokeWeight: 2,
+			fillColor: "#6666FF",
+			fillOpacity: 0.35
+		});
+		NewarkHighlight.setMap(map);
+	}
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0pKu3S90groyHqvuki5ppK_L1wGEDX3M&callback=initMap">
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/staticmap?path=fillcolor:0xAA000033%7Ccolor:0xFFFFFF00%7C
+enc:encoded_data&key=AIzaSyD0pKu3S90groyHqvuki5ppK_L1wGEDX3M"></script>
+  </body>
+</html>

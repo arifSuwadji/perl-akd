@@ -1,0 +1,74 @@
+%= include 'header', title => 'Nilai Kegiatan'
+
+<!-- page content -->
+<div class="right_col" role="main">
+	<div class="page-title">
+	<div class="title_left">
+		<h3>Nilai Kegiatan</h3>
+	</div>
+	</div>
+	<div class="clearfix"></div>
+	<div class="row">
+	<div class="x_panel">
+% my $par_id = param('id') || 0;
+% my $data_kegiatan = db->aktifitas->data($par_id);
+% my $sub_kategori = $par_id ? db->kategori->data($data_kegiatan->kategori) : 0;
+		<div class="x_title">
+			<h2>Nilai Kegiatan <%= $par_id ? $sub_kategori->nama : ''%></h2>
+			<div class="clearfix"></div>
+		</div>
+		<div class="x_content bs-example-popovers">
+		<div class="peringatan hidden text-center">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i id="keterangan"></i>
+			</div>
+		</div>
+% my $info = param('info') || '';
+% if($info){
+		<div class="info text-center" id="info_error">
+			<div class="alert alert-warning fade in" role="alert">
+				<strong>Peringatan <i class="fa fa-warning"></i></strong> <i><%= $info %></i>
+			</div>
+		</div>
+% }
+		</div>
+		<div class="x_content">
+		<br />
+		<form id="nilai_kegiatan" data-parsley-validate="" class="form-horizontal form-label-left" method="post" action="/kegiatan/index">
+			<div class="clearfix"></div>
+% my $data_nilai = db->aktifitas->data_skor($par_id);
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12">Tipe</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<select class="form-control tipe" name="tipe" data-placeholder="Pilih Tipe Penilaian">
+						<option value=""></option>
+% my $par_tipe = $par_id ? $data_nilai ? $data_nilai->tipe : param('tipe') : param('tipe');
+% foreach(qw/frekuensi jumlah_peserta/){
+						<option value="<%= $_ %>" <%= $_ eq $par_tipe ? 'selected' : ''%>><%= $_ eq 'frekuensi' ? 'Frekuensi' : $_ eq 'jumlah_peserta' ? 'Jumlah Peserta' : '' %></option>
+% }	
+					</select>
+				</div>
+			</div>
+% my $par_skor = $par_id ? $data_nilai ? $data_nilai->skor : param('skor') : param('skor');
+			<div class="form-group">
+				<label class="control-label col-sm-3 col-xs-12" for="skor">Skor</label>
+				<div class="col-sm-4 col-xs-12 form-group has-feedback">
+					<input type="text" id="skor" name="skor" class="form-control text-right" value="<%= $par_skor %>" placeholder="Skor Kegiatan">
+					<span class="fa fa-calculator form-control-feedback right" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="ln_solid"></div>
+			<div class="form-group">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-3">
+				<input type="hidden" name="id" value="<%= $par_id %>">
+				<button type="button" class="btn btn-success" id="simpan_nilai">Simpan</button>
+			</div>
+			</div>
+
+		</form>
+		</div>
+	</div>
+	</div>
+</div>
+
+%= include 'footer'

@@ -1,0 +1,33 @@
+% my $awal = $rs->pager->entries_per_page * ($rs->pager->current_page - 1) + 1;
+% my $max = 5;
+% my $n = 0;
+% for(1 .. 10){
+% 	if($rs->pager->current_page > $max){
+% 		$max +=5;
+% 		$n +=5;
+% 	}
+% }
+% if($max > $rs->pager->last_page){
+% 	$max = $rs->pager->last_page;
+% }
+% my ($prev, $next) = '';
+% $prev = 'disabled' if $rs->pager->current_page eq 1;
+% $next = 'disabled' if $rs->pager->current_page eq $rs->pager->last_page;
+% my %param;
+% foreach (@$params) { my $val = param($_) || next; $param{$_} = $val }
+% $param{_per} = param('_per') if param('_per');
+		<div class="">
+			<nav class="text-right">
+			<ul class="pagination pull-left">
+				<li class="pull-left">Menampilkan <%= $awal %> - <%= $i %> dari <%= $rs->count %> entri</li>
+			</ul>
+			<ul class="pagination pagination-sm no-margin pull-right">
+				<li class="<%= $prev %>"><a href="<%= $prev ? '#' : '?'.enurl {_pg => $rs->pager->current_page-1, %param} %>"><i class="fa fa-angle-double-left"></i></a></li>
+% for($n .. $max-1){
+%	++$n;
+				<li class="<%= $rs->pager->current_page eq $n ? 'active' : '' %>"><a href="?<%= enurl {_pg => $n, %param }%>"><%= $n %></a></li>
+% }
+				<li class="<%= $next %>"><a href="<%= $next ? '#' : '?'.enurl {_pg => $rs->pager->current_page+1, %param} %>"><i class="fa fa-angle-double-right"></i></a></li>
+			</ul>
+			</nav>
+		</div>

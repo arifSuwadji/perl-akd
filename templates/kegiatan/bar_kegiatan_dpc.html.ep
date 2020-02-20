@@ -1,0 +1,258 @@
+% my $data_grafik = db->aktifitas->data_bar_grafik_dpc(\&param);
+
+% my $par_bidang = param('bidang') || '';
+% my $bidang_aktifitas = $par_bidang ? db->bidang->data_array($par_bidang) : db->bidang->data();
+% my $par_kategori = param('kategori') || '';
+% my $kategori_aktifitas = $par_kategori ? db->kategori->data_array($par_kategori) : db->kategori->induk();
+% my $par_dpra = param('dpra') || '';
+% my $par_dpc = param('dpc') || '';
+% my $kelurahan = $par_dpc ? db->dpd->kelurahan(0,$par_dpc) : $par_dpra ? db->dpd->kelurahan_array($par_dpra) : db->dpd->kelurahan();
+
+<script>
+$(document).ready(function(){
+//chart pertama Aktifitas
+	$.jqplot.config.enablePlugins = true;
+% my @kat_index;
+% my $all_kategori_index = '';
+% while(my $ka = $kategori_aktifitas->next){
+%	$all_kategori_index .= $ka->nama.',';
+%	push @kat_index , {id => $ka->id, nama => $ka->nama};
+% }
+
+% my $all_bidang_index = '';
+% my $all_nama_bidang = '';
+% my @bid_index;
+% while(my $ba = $bidang_aktifitas->next){
+%	$all_bidang_index .= $ba->nama.',';
+%	my $nama_bidang = lc($ba->nama);
+%	$nama_bidang =~ s/\s/_/g;
+%	$nama_bidang =~ s/\//_/g;
+%	$all_nama_bidang .= $nama_bidang.',';
+%	push @bid_index, {id => $ba->id, nama => $ba->nama};
+	var <%= $nama_bidang %> = [
+% 	foreach(@kat_index){
+				<%= $data_grafik->{bidang}{$ba->id}{$ba->nama}{$_->{id}}{$_->{nama}} %>,
+%	}
+	];
+% }
+% $all_kategori_index =~ s/,$//g;
+% my @arr_kategori_index = split /,/, $all_kategori_index;
+	var ticks = [
+% foreach(@arr_kategori_index){
+		'<%= $_ %>',
+% }
+	];
+
+	plot1 = $.jqplot('chart1_bar', [
+			<%= $all_nama_bidang %>
+		], {
+		// Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+		animate: !$.jqplot.use_excanvas,
+		seriesDefaults:{
+			renderer:$.jqplot.BarRenderer,
+			pointLabels: { show: true }
+		},
+		axes: {
+			xaxis: {
+				renderer: $.jqplot.CategoryAxisRenderer,
+				ticks: ticks
+			}
+		},
+		title: {text:"Aktifitas"},
+		highlighter: { show: false },
+/*		series:[
+			//{label:'Process A', color: 'red'}, {label:'Process A', color: 'yellow'},{label:'Process B',color:'blue'}
+% $all_nama_bidang =~ s/,$//g;
+% my @arr_nama_bidang = split("\,", $all_nama_bidang );
+% foreach(@arr_nama_bidang){
+			{label:'<%= $_ %>'},
+% }
+		],
+		legend: {
+			show: true,
+			location: 'e',
+			placement: 'outside'
+		}
+*/
+	});
+
+% $all_bidang_index =~ s/,$//g;
+% my @bidang_index = split /,/, $all_bidang_index;
+	var bidang = [
+% foreach(@bidang_index){
+	"<%= $_ %>",
+% }
+	];
+
+
+% $all_kategori_index =~ s/,$//g;
+% my @kategori_index = split /,/, $all_kategori_index;
+	var kategori = [
+% foreach(@kategori_index){
+	"<%= $_ %>",
+% }
+	];
+
+	$('#chart1_bar').bind('jqplotDataClick', 
+		function (ev, seriesIndex, pointIndex, data) {
+			$(".modal-grafik").modal('show');
+			$(".modal-grafik").on("shown.bs.modal", function(){
+				$(".modal-grafik").find("#modal_color").addClass('btn-primary');
+				$(".modal-grafik").find("#modal_color").removeClass('btn-success');
+				$(".modal-grafik").find("#modal_size").addClass('modal-sm');
+				$(".modal-grafik").find("#judul").text("Bidang "+bidang[seriesIndex]);
+				$(".modal-grafik").find(".modal-body #pencapaian").text(data);
+				var value = $(".modal-grafik").find(".modal-body #pencapaian").text();
+				var arr = value.split(",");
+				var value = $(".modal-grafik").find(".modal-body #pencapaian").text(kategori[pointIndex]+" : "+arr[1]);
+			});
+
+		}
+	);
+
+	$('#chart1_bar').bind('jqplotDataHighlight', 
+		function (ev, seriesIndex, pointIndex, data) {
+			$(".modal-grafik").find(".modal-body #pencapaian").text(data);
+			var value = $(".modal-grafik").find(".modal-body #pencapaian").text();
+			var str = value;//"1,70";
+			var matchedString = str.match(/([^.,]+),([^.,]+)/);
+			$('#info1').html('Bidang '+bidang[seriesIndex]+', Kategori '+kategori[pointIndex]+', Nilai '+matchedString[2]);
+		}
+	);
+             
+	$('#chart1_bar').bind('jqplotDataUnhighlight', 
+		function (ev) {
+			$('#info1').html('');
+		}
+	);
+
+//chart kedua Teritori
+% my @kode_kelurahan;
+% while(my $kec = $kelurahan->next){
+%	my $kode = $kec->kode;
+%	$kode = 'Nokode' unless $kode;
+%	push @kode_kelurahan, {kode => $kode};
+% }
+
+% my $all_nama_bidkat = '';
+% foreach(@bid_index){
+%	my $bid_idKey = $_->{id};
+%	my $bid_namaKey = $_->{nama};
+%	my $nama_bidang = lc($_->{nama});
+%	$nama_bidang =~ s/\s/_/g;
+%	$nama_bidang =~ s/\//_/g;
+%	foreach(@kat_index){
+%		my $kat_idKey = $_->{id};
+%		my $kat_namaKey = $_->{nama};
+%		my $nama_kategori = lc($_->{nama});
+%		$nama_kategori =~ s/\s/_/g;
+%		$nama_kategori =~ s/\//_/g;
+%		$all_nama_bidkat .= $nama_bidang.'_'.$nama_kategori.',';
+
+	var <%= $nama_bidang %>_<%= $nama_kategori %> = [
+%		my $string_value  = '';
+% 		foreach(@kode_kelurahan){
+%			my $value = $data_grafik->{kelurahan}{$bid_idKey}{$bid_namaKey}{$kat_idKey}{$kat_namaKey}{$_->{kode}};
+%			if($value == 0){
+%				$string_value .= 0 .',';
+%			}else{
+%				$string_value .= $value .',';
+%			}
+%		}
+				<%= $string_value %>
+	];
+% 	}
+% }
+
+
+	var ticks = [
+% foreach(@kode_kelurahan){
+		'<%= $_->{kode} %>',
+% }
+	];
+
+
+	plot1 = $.jqplot('chart2_bar', [
+			<%= $all_nama_bidkat %>
+		], {
+		// Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+		animate: !$.jqplot.use_excanvas,
+		seriesDefaults:{
+			renderer:$.jqplot.BarRenderer,
+			pointLabels: { show: true }
+		},
+		axes: {
+			xaxis: {
+				renderer: $.jqplot.CategoryAxisRenderer,
+				ticks: ticks
+			}
+		},
+		title: {text:"Teritori"},
+		highlighter: { show: false },
+/*		series:[
+			//{label:'Process A', color: 'red'}, {label:'Process A', color: 'yellow'},{label:'Process B',color:'blue'}
+% $all_nama_bidkat =~ s/,$//g;
+% my @arr_nama_bidkat = split("\,", $all_nama_bidkat );
+% foreach(@arr_nama_bidkat){
+			{label:'<%= $_ %>'},
+% }
+		],
+
+		legend: {
+			show: true,
+			location: 'e',
+			placement: 'outside'
+		}*/
+	});
+
+	var bidang_kategori = [
+% foreach(@bid_index){
+%	my $bid_namaKey = $_->{nama};
+%	foreach(@kat_index){
+		"<%= $bid_namaKey %> Kategori <%= $_->{nama}%>",
+%	}
+% }
+	];
+
+
+	var kelurahan = [
+% foreach(@kode_kelurahan){
+	"<%= $_->{kode} %>",
+% }
+	];
+
+	$('#chart2_bar').bind('jqplotDataClick', 
+		function (ev, seriesIndex, pointIndex, data) {
+			$(".modal-grafik").modal('show');
+			$(".modal-grafik").on("shown.bs.modal", function(){
+				$(".modal-grafik").find("#modal_color").removeClass('btn-primary');
+				$(".modal-grafik").find("#modal_color").addClass('btn-success');
+				$(".modal-grafik").find("#modal_size").removeClass('modal-sm');
+				$(".modal-grafik").find("#judul").text("Bidang "+bidang_kategori[seriesIndex]);
+				$(".modal-grafik").find(".modal-body #pencapaian").text(data);
+				var value = $(".modal-grafik").find(".modal-body #pencapaian").text();
+				var arr = value.split(",");
+				var value = $(".modal-grafik").find(".modal-body #pencapaian").text(kelurahan[pointIndex]+" : "+arr[1]);
+			});
+
+		}
+	);
+
+	$('#chart2_bar').bind('jqplotDataHighlight', 
+		function (ev, seriesIndex, pointIndex, data) {
+			$(".modal-grafik").find(".modal-body #pencapaian").text(data);
+			var value = $(".modal-grafik").find(".modal-body #pencapaian").text();
+			var str = value;//"1,70";
+			var matchedString = str.match(/([^.,]+),([^.,]+)/);
+			$('#info2').html('Bidang '+bidang_kategori[seriesIndex]+', Kode Kelurahan '+kelurahan[pointIndex]+', Nilai '+matchedString[2]);
+		}
+	);
+             
+	$('#chart2_bar').bind('jqplotDataUnhighlight', 
+		function (ev) {
+			$('#info2').html('');
+		}
+	);
+
+});
+</script>
